@@ -1,7 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-const { Pool } = require('pg');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import pg from 'pg';
+const { Pool } = pg;
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -391,15 +393,15 @@ app.post('/api/turnos/solicitar-directo', (req, res) => {
 });
 
 // Tu backend en Express simplemente hace esto en segundo plano:
-await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+await fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER_ID || 'ID'}/messages`, {
   method: 'POST',
   headers: {
-    'Authorization': `Bearer ${META_ACCESS_TOKEN}`,
+    'Authorization': `Bearer ${process.env.META_ACCESS_TOKEN || 'TOKEN'}`,
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     messaging_product: "whatsapp",
-    to: pacienteTelefono,
+    to: "pacienteTelefono",
     type: "template",
     template: {
       name: "confirmacion_turno",
@@ -407,11 +409,11 @@ await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       components: [{
         type: "body",
         parameters: [
-          { type: "text", text: pacienteNombre },
-          { type: "text", text: fechaTurno },
-          { type: "text", text: horaTurno }
+          { type: "text", text: "pacienteNombre" },
+          { type: "text", text: "fechaTurno" },
+          { type: "text", text: "horaTurno" }
         ]
       }]
     }
   })
-});
+}).catch(err => console.log('Fetch de prueba WhatsApp:', err.message));
