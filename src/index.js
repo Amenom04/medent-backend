@@ -391,29 +391,3 @@ app.post('/api/turnos/solicitar-directo', (req, res) => {
   turnosBD.push(nuevoTurno);
   return res.status(200).json(nuevoTurno);
 });
-
-// Tu backend en Express simplemente hace esto en segundo plano:
-await fetch(`https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER_ID || 'ID'}/messages`, {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${process.env.META_ACCESS_TOKEN || 'TOKEN'}`,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    messaging_product: "whatsapp",
-    to: "pacienteTelefono",
-    type: "template",
-    template: {
-      name: "confirmacion_turno",
-      language: { code: "es" },
-      components: [{
-        type: "body",
-        parameters: [
-          { type: "text", text: "pacienteNombre" },
-          { type: "text", text: "fechaTurno" },
-          { type: "text", text: "horaTurno" }
-        ]
-      }]
-    }
-  })
-}).catch(err => console.log('Fetch de prueba WhatsApp:', err.message));
